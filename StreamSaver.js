@@ -25,12 +25,15 @@
     ? 'iframe'
     : 'navigate'
 
+  let mitm = 'https://jimmywarting.github.io/StreamSaver.js/mitm.html?version=2.0.0'
+  ;
   const streamSaver = {
     createWriteStream,
     WritableStream: global.WritableStream || ponyfill.WritableStream,
     supported: true,
     version: { full: '2.0.5', major: 2, minor: 0, dot: 5 },
-    mitm: 'https://jimmywarting.github.io/StreamSaver.js/mitm.html?version=2.0.0'
+    get mitm () { return mitm },
+    setMitm: function(url) { mitm = url; },
   }
 
   /**
@@ -119,8 +122,8 @@
   function loadTransporter () {
     if (!mitmTransporter) {
       mitmTransporter = isSecureContext
-        ? makeIframe(streamSaver.mitm)
-        : makePopup(streamSaver.mitm)
+        ? makeIframe(mitm)
+        : makePopup(mitm)
     }
   }
 
@@ -230,7 +233,7 @@
               mitmTransporter = null
               // Special case for firefox, they can keep sw alive with fetch
               if (downloadStrategy === 'iframe') {
-                makeIframe(streamSaver.mitm)
+                makeIframe(mitm)
               }
             }
 
